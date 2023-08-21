@@ -26,6 +26,12 @@ const ptComponents = {
 }
 
 const Post = ({post}) => {
+
+  if (!post) {
+    // Handle the case when post data is not available
+    return <div>Loading...</div>; // You can render a loading state here
+  }
+  
   const {
     title = 'Missing title',
     name = 'Missing name',
