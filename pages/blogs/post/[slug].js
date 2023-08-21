@@ -1,7 +1,8 @@
 import groq from 'groq'
 import imageUrlBuilder from '@sanity/image-url'
 import {PortableText} from '@portabletext/react'
-import client from '../../../client'
+// import client from '../../../client'
+import { createClient } from "next-sanity";
 
 function urlFor (source) {
   return imageUrlBuilder(client).image(source)
@@ -60,6 +61,14 @@ const Post = ({post}) => {
   );
 };
 
+const client = createClient({
+  projectId: 'm25bacsw',
+  dataset: 'production',// or the name you chose in step 1
+  useCdn: true, // `false` if you want to ensure fresh data
+  apiVersion: '2021-08-31',
+})
+
+
 const query = groq`*[_type == "post" && slug.current == $slug][0]{
   title,
   "name": author->name,
@@ -68,9 +77,7 @@ const query = groq`*[_type == "post" && slug.current == $slug][0]{
   body
 }`
 export async function getStaticPaths() {
-  const paths = await client.fetch(
-    groq`*[_type == "post" && defined(slug.current)][].slug.current`
-  )
+  const paths = await client.fetch(groq`*[_type == "post" && defined(slug.current)][].slug.current`)
 
   return {
     paths: paths.map((slug) => ({params: {slug}})),

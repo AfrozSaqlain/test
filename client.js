@@ -1,9 +1,9 @@
 
-import sanityClient from '@sanity/client'
+import { createClient } from "next-sanity";
 
-export default sanityClient({
+const client = createClient({
     projectId: 'm25bacsw',
     dataset: 'production',// or the name you chose in step 1
     useCdn: true, // `false` if you want to ensure fresh data
-    API_version: '2021-03-25'
+    apiVersion: '2021-08-31',
 })
