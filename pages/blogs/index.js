@@ -36,13 +36,15 @@ const client = createClient({
 })
 
 
-export async function getStaticProps() {
-  const posts = await client.fetch(groq`*[_type == "post" && publishedAt < now()] | order(publishedAt desc)`)
+export async function getServerSideProps() {
+  const posts = await client.fetch(groq`*[_type == "post" && publishedAt < now()] | order(publishedAt desc)`);
+  
   return {
     props: {
       posts
     }
-  }
+  };
 }
+
 
 export default Index
