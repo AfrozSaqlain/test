@@ -3,6 +3,8 @@ import imageUrlBuilder from '@sanity/image-url'
 import {PortableText} from '@portabletext/react'
 // import client from '../../../client'
 import { createClient } from "next-sanity";
+import Head from 'next/head';
+import Script from 'next/script';
 
 function urlFor (source) {
   return imageUrlBuilder(client).image(source)
@@ -26,7 +28,6 @@ const ptComponents = {
 }
 
 const Post = ({post}) => {
-
   if (!post) {
     // Handle the case when post data is not available
     return <div>Loading...</div>; // You can render a loading state here
@@ -40,6 +41,11 @@ const Post = ({post}) => {
     body = []
   } = post
   return (
+    <>
+    <Head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3772097457340486"
+     crossorigin="anonymous"></script>
+    </Head>
     <article className="max-w-prose mx-auto p-4 mt-24 shadow-2xl">
       <h1 className="text-3xl font-bold mb-2">{title}</h1>
       <span className="text-gray-500">By {name}</span>
@@ -64,6 +70,7 @@ const Post = ({post}) => {
       )}
       <PortableText value={body} components={ptComponents} />
     </article>
+    </>
   );
 };
 
@@ -101,4 +108,5 @@ export async function getStaticProps(context) {
     }
   }
 }
+
 export default Post
