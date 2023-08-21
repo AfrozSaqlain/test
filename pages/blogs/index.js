@@ -22,6 +22,7 @@ const Index = ({ posts }) => {
               </Link>
             )
         )}
+        {!posts.length > 0 && <p>No pots to show</p>}
       </ul>
     </div>
   )
