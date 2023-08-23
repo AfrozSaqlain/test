@@ -26,7 +26,7 @@ const Home = () => {
               animate='show'
               exit='hidden'
               className='h2'>
-              Transforming Ideas <br /> Into {' '}
+              Testing Ideas <br /> Into {' '}
               <span className='text-accent'>Reality</span>
             </motion.h2>
             {/* subtitle */}

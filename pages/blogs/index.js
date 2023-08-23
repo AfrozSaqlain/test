@@ -1,50 +1,74 @@
-import Link from 'next/link'
-import groq from 'groq'
-// import client from '../../client'
-import { createClient } from "next-sanity";
+// // icons
+// import {
+//   RxCrop,
+//   RxPencil2,
+//   RxDesktop,
+//   RxReader,
+//   RxRocket,
+//  } from 'react-icons/rx';
 
-const Index = ({ posts }) => {
+// // service data
+
+// export const serviceData = [
+//   {
+//   icon: <RxCrop/>,
+//   title: 'Branding',
+//   description: 'Lorem ipsum'
+//   },
+//   {
+//     icon: <RxPencil2/>,
+//     title: 'Design',
+//     description: 'Lorem ipsum'
+//   },
+//   {
+//     icon: <RxDesktop/>,
+//     title: 'Development',
+//     description: 'Lorem ipsum'
+//   },
+//   {
+//     icon: <RxReader/>,
+//     title: 'Copywriting',
+//     description: 'Lorem ipsum'
+//   },
+//   {
+//     icon: <RxRocket/>,
+//     title: 'SEO',
+//     description: 'Lorem ipsum'
+//   },
+// ]
+
+//import react
+import React from 'react';
+
+// components
+import ServiceSlider from '../../components/ServiceSlider';
+import Bulb from '../../components/Bulb';
+import Circles from '../../components/Circles';
+
+// framer motion
+import { motion } from 'framer-motion';
+import { fadeIn } from '../../variants';
+
+const Blogs = () => {
   return (
-    <div className='relative mx-4 md:mx-24 lg:mx-96 mt-16 md:mt-24 lg:mt-40'>
-      <h1 className='text-3xl mb-6'>Welcome to a blog!</h1>
-      <ul>
-        {posts.length > 0 && posts.map(
-          ({ _id, title = '', slug = '', publishedAt = '' }) =>
-            slug && (
-              <Link key={_id} href={`/blogs/post/${encodeURIComponent(slug.current)}`} legacyBehavior>
-                <a className='block border border-gray-300/20 p-4 mb-4 z-50 rounded-lg'>
-                  <span className='font-serif text-lg'>
-                    {title}
-                  </span>
-                  <br/>
-                  ({new Date(publishedAt).toDateString()})
-                </a>
-              </Link>
-            )
-        )}
-        {!posts.length > 0 && <p>No pots to show</p>}
-      </ul>
+    <div className='h-full bg-primary/30 py-36 flex items-center'>
+      <Circles />
+      <div className="container mx-auto">
+        <div className='flex flex-col xl:flex-row gap-x-8'>
+          {/* text */}
+          <div className='text-center flex xl:w-[30vw] flex-col lg:text-left mb-4 xl:mb-0'>
+            <motion.h2 variants={fadeIn('up', 0.3)} initial='hidden' animate='show' exit='hidden' className='h2 xl:mt-8'>My Blogs <span className='text-accent'>.</span></motion.h2>
+            <motion.p variants={fadeIn('up', 0.4)} initial='hidden' animate='show' exit='hidden' className='mb-4 max-w-[400px] mx-auto lg:mx-0'>Welcome to my blog! I work hard to create informative and engaging content on a wide range of topics from finance and science to wanting to learn more about the latest trends in technology, you&rsquo;ll find it all here.</motion.p>
+          </div>
+            {/* slider */}
+          <motion.div variants={fadeIn('down', 0.6)} initial='hidden' animate='show' exit='hidden' className='w-full xl:max-w-[65%]'>
+            <ServiceSlider />
+          </motion.div>
+        </div>
+      </div>
+      <Bulb />
     </div>
-  )
-}
+  );
+};
 
-const client = createClient({
-  projectId: 'm25bacsw',
-  dataset: 'production',// or the name you chose in step 1
-  useCdn: true, // `false` if you want to ensure fresh data
-  apiVersion: '2021-08-31',
-})
-
-
-export async function getServerSideProps() {
-  const posts = await client.fetch(groq`*[_type == "post" && publishedAt < now()] | order(publishedAt desc)`);
-  
-  return {
-    props: {
-      posts
-    }
-  };
-}
-
-
-export default Index
+export default Blogs;

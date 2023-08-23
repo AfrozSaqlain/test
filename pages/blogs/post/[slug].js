@@ -1,12 +1,13 @@
 import groq from 'groq'
 import imageUrlBuilder from '@sanity/image-url'
-import {PortableText} from '@portabletext/react'
+import { PortableText } from '@portabletext/react'
 // import client from '../../../client'
 import { createClient } from "next-sanity";
-import Head from 'next/head';
-import Script from 'next/script';
+import Image from 'next/image'
+import SimpleBar from 'simplebar-react';
+import 'simplebar-react/dist/simplebar.min.css';
 
-function urlFor (source) {
+function urlFor(source) {
   return imageUrlBuilder(client).image(source)
 }
 
@@ -14,25 +15,34 @@ const ptComponents = {
   types: {
     image: ({ value }) => {
       if (!value?.asset?._ref) {
-        return null
+        return null;
       }
+
+      // Generate the URL directly here
+      const imageUrl = urlFor(value).fit('max').auto('format').url();
+
       return (
-        <img
+        <Image
           alt={value.alt || ' '}
           loading="lazy"
-          src={urlFor(value).width(320).height(240).fit('max').auto('format')}
+          width={320}
+          height={240}
+          src={imageUrl} // Pass the generated URL here
+          className='rounded-lg justify-center mx-auto items-center shadow-lg'
         />
-      )
+      );
     },
   }
-}
+};
 
-const Post = ({post}) => {
+
+const Post = ({ post }) => {
+
   if (!post) {
     // Handle the case when post data is not available
     return <div>Loading...</div>; // You can render a loading state here
   }
-  
+
   const {
     title = 'Missing title',
     name = 'Missing name',
@@ -41,36 +51,40 @@ const Post = ({post}) => {
     body = []
   } = post
   return (
-    <>
-    <Head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3772097457340486"
-     crossorigin="anonymous"></script>
-    </Head>
-    <article className="max-w-prose mx-auto p-4 mt-24 shadow-2xl">
-      <h1 className="text-3xl font-bold mb-2">{title}</h1>
-      <span className="text-gray-500">By {name}</span>
-      {categories && (
-        <ul className="mt-2 mb-4">
-          Posted in 
-          {categories.map((category) => (
-            <li key={category} className="inline-block mr-2 text-blue-500">
-              {category}
-            </li>
-          ))}
-        </ul>
-      )}
-      {authorImage && (
-        <div className="mb-4">
-          <img
-            className="w-12 h-12 rounded-full"
-            src={urlFor(authorImage).width(50).url()}
-            alt={`${name}'s picture`}
-          />
-        </div>
-      )}
-      <PortableText value={body} components={ptComponents} />
-    </article>
-    </>
+    <div className="relative h-full">
+      <div className='h-full translate-y-10 overflow-y-auto overflow-visible overscroll-y-auto pb-24 mt-4 pt-4'>
+        <SimpleBar forceVisible="y" autoHide={true} className='overflow-visible overscroll-y-auto h-full'>
+          <article className="max-w-prose mx-auto w-auto p-4 mt-4 shadow-2xl mb-10 pt-4">
+            <h1 className="text-3xl font-bold mb-2">{title}</h1>
+            <span className="text-gray-500">By {name}</span>
+            {categories && (
+              <ul className="mt-2 mb-4">
+                Posted in
+                {categories.map((category) => (
+                  <li key={category} className="inline-block mr-2 text-blue-500">
+                    {category}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {authorImage && (
+              <div className="mb-4">
+                <Image
+                  className="w-12 h-12 rounded-full"
+                  src={urlFor(authorImage).width(50).url()}
+                  width={50}
+                  height={50}
+                  alt={`${name}'s picture`}
+                />
+              </div>
+            )}
+            <div className='prose max-w-none pb-8 pt-10 dark:prose-invert prose-lg'>
+              <PortableText value={body} components={ptComponents} />
+            </div>
+          </article>
+        </SimpleBar>
+      </div>
+    </div>
   );
 };
 
@@ -89,26 +103,17 @@ const query = groq`*[_type == "post" && slug.current == $slug][0]{
   "authorImage": author->image,
   body
 }`
-// export async function getStaticPaths() {
-//   const paths = await client.fetch(groq`*[_type == "post" && defined(slug.current)][].slug.current`)
-
-//   return {
-//     paths: paths.map((slug) => ({params: {slug}})),
-//     fallback: true,
-//   }
-// }
 
 export async function getServerSideProps(context) {
   const { slug = "" } = context.query; // Note the change from `params` to `query`
-  
+
   const post = await client.fetch(query, { slug });
-  
+
   return {
     props: {
       post
     }
   };
 }
-
 
 export default Post

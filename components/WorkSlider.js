@@ -18,7 +18,7 @@ export const workSlider = {
           title: 'Electricity',
           subtitle: 'and Magnetism',
           path: '/lightning.jpg',
-          url: '../blogs/fashion',
+          url: '../academics/electromag',
         },
         {
           title: 'Introductory',

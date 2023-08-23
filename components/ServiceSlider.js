@@ -37,7 +37,7 @@ const serviceData = [
     icon: <RiStockLine />,
     title: 'Investment',
     description: 'Guide to understanding of trading and investment.',
-    url: '../blogs/stock_market',
+    url: '../blogs/financial_investment',
   },
   {
     icon: <RxPencil2 />,
